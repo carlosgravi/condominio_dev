@@ -6,6 +6,7 @@ import com.example.projeto_rp_condominio_dev.model.Habitante;
 import com.example.projeto_rp_condominio_dev.repository.HabitanteRepository;
 import com.example.projeto_rp_condominio_dev.repository.SpecificationsHabitante;
 import com.example.projeto_rp_condominio_dev.service.exceptions.RequiredFieldMissingException;
+import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,28 @@ public class HabitanteService {
         for (Habitante habitante : habitantes) {
             HabitanteListDTO habitanteListDTO = new HabitanteListDTO(habitante.getId(), habitante.getNome());
             retorno.add(habitanteListDTO);
+        }
+        return retorno;
+    }
+
+    public List<HabitanteDTO> listarPorIdade(Integer idade) {
+
+        LocalDate agora = LocalDate.now();
+        LocalDate dtMax = LocalDate.of(agora.getYear()-idade, agora.getMonth(), agora.getDayOfMonth());
+        List<Habitante> habitantes = habitanteRepository.findAll(Specification.where(
+                SpecificationsHabitante.idade(dtMax)
+        ));
+        List<HabitanteDTO> retorno = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        for (Habitante habitante : habitantes) {
+            HabitanteDTO habitanteDTO = new HabitanteDTO(
+                    habitante.getNome(),
+                    habitante.getSobrenome(),
+                    habitante.getCpf(),
+                    habitante.getDtNasc().format(formatter),
+                    habitante.getRenda()
+            );
+            retorno.add(habitanteDTO);
         }
         return retorno;
     }
