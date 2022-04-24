@@ -1,16 +1,21 @@
 package com.example.projeto_rp_condominio_dev.service;
 
 import com.example.projeto_rp_condominio_dev.dto.HabitanteDTO;
+import com.example.projeto_rp_condominio_dev.dto.HabitanteListDTO;
 import com.example.projeto_rp_condominio_dev.model.Habitante;
 import com.example.projeto_rp_condominio_dev.repository.HabitanteRepository;
+import com.example.projeto_rp_condominio_dev.repository.SpecificationsHabitante;
 import com.example.projeto_rp_condominio_dev.service.exceptions.RequiredFieldMissingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +23,18 @@ public class HabitanteService {
 
     @Autowired
     private HabitanteRepository habitanteRepository;
+
+    public List<HabitanteListDTO> listar(String nome, Integer mes){
+        List <Habitante> habitantes = habitanteRepository.findAll(Specification.where(
+                SpecificationsHabitante.nome(nome)
+        ));
+        List <HabitanteListDTO> retorno = new ArrayList<>();
+        for (Habitante habitante : habitantes) {
+            HabitanteListDTO habitanteListDTO = new HabitanteListDTO(habitante.getId(), habitante.getNome());
+            retorno.add(habitanteListDTO);
+        }
+        return retorno;
+    }
 
     public Long salvar(HabitanteDTO habitanteDTO) {
         Habitante habitante = validarEConverterDTO(habitanteDTO);
