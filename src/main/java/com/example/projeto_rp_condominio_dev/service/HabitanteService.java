@@ -19,7 +19,7 @@ public class HabitanteService {
     @Autowired
     private HabitanteRepository habitanteRepository;
 
-    private Long salvar(HabitanteDTO habitanteDTO) {
+    public Long salvar(HabitanteDTO habitanteDTO) {
         Habitante habitante = validarEConverterDTO(habitanteDTO);
         habitante = habitanteRepository.save(habitante);
         return habitante.getId();
@@ -82,7 +82,7 @@ public class HabitanteService {
         }
     }
 
-    public static boolean isValidCPF(String CPF) {
+    private void isValidCPF(String CPF) {
         // considera-se erro CPF's formados por uma sequencia de numeros iguais
         if (CPF.equals("00000000000") ||
                 CPF.equals("11111111111") ||
@@ -91,13 +91,11 @@ public class HabitanteService {
                 CPF.equals("66666666666") || CPF.equals("77777777777") ||
                 CPF.equals("88888888888") || CPF.equals("99999999999") ||
                 (CPF.length() != 11))
-            return(false);
+            throw new IllegalArgumentException("CPF inválido");
 
         char dig10, dig11;
         int sm, i, r, num, peso;
 
-        // "try" - protege o codigo para eventuais erros de conversao de tipo (int)
-        try {
             // Calculo do 1o. Digito Verificador
             sm = 0;
             peso = 10;
@@ -131,11 +129,8 @@ public class HabitanteService {
 
             // Verifica se os digitos calculados conferem com os digitos informados.
             if ((dig10 == CPF.charAt(9)) && (dig11 == CPF.charAt(10)))
-                return(true);
-            else return(false);
-        } catch (IllegalArgumentException erro) {
-            return(false);
-        }
+                return;
+            else throw new IllegalArgumentException("CPF inválido");
     }
 
     private LocalDate verificationDtNasc(HabitanteDTO habitanteDTO) throws DateTimeParseException {
