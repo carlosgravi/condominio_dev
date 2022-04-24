@@ -52,4 +52,12 @@ public class HabitanteController {
         }
         return ResponseEntity.ok(habitanteDTOS);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity <HabitanteDTO> getById(
+            @PathVariable Long id
+    ) {
+        HabitanteDTO habitanteDTO = habitanteService.listarPorId(id);
+        return ResponseEntity.ok(habitanteDTO);
+    }
 }
