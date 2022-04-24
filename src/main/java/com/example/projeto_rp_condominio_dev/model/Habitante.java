@@ -25,5 +25,5 @@ public class Habitante {
     @Column(name = "dt_nasc")
     private LocalDate dtNasc;
 
-    private BigDecimal renda;
+    private Double renda;
 }

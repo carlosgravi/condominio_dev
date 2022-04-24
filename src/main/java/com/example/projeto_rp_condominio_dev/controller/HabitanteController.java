@@ -2,6 +2,7 @@ package com.example.projeto_rp_condominio_dev.controller;
 
 import com.example.projeto_rp_condominio_dev.dto.HabitanteDTO;
 import com.example.projeto_rp_condominio_dev.dto.HabitanteListDTO;
+import com.example.projeto_rp_condominio_dev.model.RelatorioFinanceiro;
 import com.example.projeto_rp_condominio_dev.service.HabitanteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -67,5 +68,12 @@ public class HabitanteController {
     ) {
         habitanteService.deletarPorId(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/relatorio")
+    public ResponseEntity <RelatorioFinanceiro> getRelatorio(){
+
+        RelatorioFinanceiro relatorioFinanceiro = habitanteService.gerarRelatorio();
+        return ResponseEntity.ok(relatorioFinanceiro);
     }
 }

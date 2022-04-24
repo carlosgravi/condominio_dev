@@ -3,14 +3,14 @@ package com.example.projeto_rp_condominio_dev.service;
 import com.example.projeto_rp_condominio_dev.dto.HabitanteDTO;
 import com.example.projeto_rp_condominio_dev.dto.HabitanteListDTO;
 import com.example.projeto_rp_condominio_dev.model.Habitante;
+import com.example.projeto_rp_condominio_dev.model.RelatorioFinanceiro;
 import com.example.projeto_rp_condominio_dev.repository.HabitanteRepository;
 import com.example.projeto_rp_condominio_dev.repository.SpecificationsHabitante;
 import com.example.projeto_rp_condominio_dev.service.exceptions.RequiredFieldMissingException;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -25,6 +25,9 @@ public class HabitanteService {
 
     @Autowired
     private HabitanteRepository habitanteRepository;
+
+    @Value("${orcamento.condominio}")
+    private Double orcamento;
 
     public List<HabitanteListDTO> listar(String nome, Integer mes){
         List <Habitante> habitantes = habitanteRepository.findAll(Specification.where(
@@ -86,6 +89,13 @@ public class HabitanteService {
         Habitante habitante = validarEConverterDTO(habitanteDTO);
         habitante = habitanteRepository.save(habitante);
         return habitante.getId();
+    }
+
+    public RelatorioFinanceiro gerarRelatorio() {
+        Double gastoTotal = habitanteRepository.getGastoTotal();
+        Double diferenca = orcamento - gastoTotal;
+        Habitante moradorMaiorCusto = habitanteRepository.getMoradorMaiorCusto();
+        return new RelatorioFinanceiro(orcamento, gastoTotal, diferenca, moradorMaiorCusto);
     }
 
     private Habitante validarEConverterDTO(HabitanteDTO habitanteDTO) {
