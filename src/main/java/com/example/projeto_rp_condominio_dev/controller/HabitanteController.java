@@ -60,4 +60,12 @@ public class HabitanteController {
         HabitanteDTO habitanteDTO = habitanteService.listarPorId(id);
         return ResponseEntity.ok(habitanteDTO);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity <Void> delete(
+            @PathVariable Long id
+    ) {
+        habitanteService.deletarPorId(id);
+        return ResponseEntity.noContent().build();
+    }
 }

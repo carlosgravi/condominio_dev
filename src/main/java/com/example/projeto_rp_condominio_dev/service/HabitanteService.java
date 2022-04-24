@@ -75,6 +75,13 @@ public class HabitanteService {
         return habitanteDTO;
     }
 
+    public void deletarPorId(Long id) {
+        Habitante habitante = habitanteRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Esse Id não possui habitante cadastrado.")
+        );
+        habitanteRepository.delete(habitante);
+    }
+
     public Long salvar(HabitanteDTO habitanteDTO) {
         Habitante habitante = validarEConverterDTO(habitanteDTO);
         habitante = habitanteRepository.save(habitante);
