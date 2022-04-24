@@ -41,4 +41,15 @@ public class HabitanteController {
         }
         return ResponseEntity.ok(habitanteListDTOS);
     }
+
+    @GetMapping("/idade/{idade}")
+    public ResponseEntity <List<HabitanteDTO>> getByAge(
+            @PathVariable Integer idade
+    ) {
+        List<HabitanteDTO> habitanteDTOS = habitanteService.listarPorIdade(idade);
+        if (habitanteDTOS.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(habitanteDTOS);
+    }
 }

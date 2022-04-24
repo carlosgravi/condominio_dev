@@ -12,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -57,6 +58,21 @@ public class HabitanteService {
             retorno.add(habitanteDTO);
         }
         return retorno;
+    }
+
+    public HabitanteDTO listarPorId(Long id) {
+        Habitante habitante = habitanteRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("Esse Id não possui habitante cadastrado.")
+        );
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        HabitanteDTO habitanteDTO = new HabitanteDTO(
+                habitante.getNome(),
+                habitante.getSobrenome(),
+                habitante.getCpf(),
+                habitante.getDtNasc().format(formatter),
+                habitante.getRenda()
+        );
+        return habitanteDTO;
     }
 
     public Long salvar(HabitanteDTO habitanteDTO) {
